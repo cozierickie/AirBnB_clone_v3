@@ -68,7 +68,7 @@ test_db_storage.py'])
                             "{:s} method needs a docstring".format(func[0]))
 
 
-class TestFileStorage(unittest.TestCase):
+class TestDBStorage(unittest.TestCase):
     """Test the FileStorage class"""
     @unittest.skipIf(models.storage_t != 'db', "not testing db storage")
     def test_all_returns_dict(self):
@@ -86,3 +86,41 @@ class TestFileStorage(unittest.TestCase):
     @unittest.skipIf(models.storage_t != 'db', "not testing db storage")
     def test_save(self):
         """Test that save properly saves objects to file.json"""
+
+
+@unittest.skipIf(models.storage_t != 'db', "not testing db storage")
+class TestNewCasesForDbStorage(unittest.TestCase):
+    '''cases for methods get and count'''
+
+    def test_get_states(self):
+        """Test db storage. get function"""
+        db_state1 = State(name='Atlanta')
+        models.storage.new(db_state1)
+        models.storage.save()
+        key = models.storage.get(State, db_state1.id)
+        self.assertEqual(key.id, db_state1.id)
+
+    def test_count_method(self):
+        """Test db storage. count function"""
+        n1 = models.storage.count('State')
+        db_state2 = State(name='Oregon')
+        models.storage.new(db_state2)
+        models.storage.save()
+        n2 = models.storage.count('State')
+        self.assertEqual(n1 + 1, n2)
+    @unittest.skipIf(models.storage_t != 'db', "not testing db storage")
+    def test_all_returns_dict(self):
+        """Test that all returns a dictionaty"""
+        self.assertIs(type(models.storage.all()), dict)
+
+    @unittest.skipIf(models.storage_t != 'db', "not testing db storage")
+    def test_all_no_class(self):
+        """Test that all returns all rows when no class is passed"""
+
+    @unittest.skipIf(models.storage_t != 'db', "not testing db storage")
+    def test_new(self):
+        """test that new adds an object to the database"""
+
+    @unittest.skipIf(models.storage_t != 'db', "not testing db storage")
+    def test_save(self):
+        """Test that save properly saves objects to database"""
